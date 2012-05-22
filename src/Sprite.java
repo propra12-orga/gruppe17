@@ -14,7 +14,14 @@ public abstract class Sprite extends Rectangle2D.Double implements Bewegungen, Z
 	protected double dx;    // Dies wird unsere Bewegungsvariable (dx = horizontal bewegen, dy = vertikal bewegen)
 	protected double dy;
 	
+	static boolean abbruch=false;
 	
+	static int[][] array=new int[600][600];
+	
+	int loop_from;
+	int loop_to;
+	
+	boolean entfernen; //benötigen wir um Objekte, die nicht mehr benötigt werden zu entfernen damit wir den benötigten Arbeitsspeicher nicht kontinuierlich erhöhen
 	
 	public Sprite (BufferedImage[] i, double x, double y, long delay, Gamepanel p) {
 		
@@ -27,6 +34,17 @@ public abstract class Sprite extends Rectangle2D.Double implements Bewegungen, Z
 		parent = p;
 		// Dies ist der Konstruktor mit der Übergabe des Image-Arrays für die Animation, Positionswerten, Verzögerung der Animation und der Referenz zum Gamepanel.
 		// Zusätzlich erhalten wir aus dem ersten Bild die Höhe und Breite, unter der Annahme, das alle folgenden die gleichen Werte besitzen
+		loop_from = 0;
+		loop_to = pics.length-1;
+		
+	}
+	
+	public void setArray(int x,int y){
+		for(int i=x;i<x+20;i++){
+			for(int j=y;j<y+20;j++){
+				array[i][j]=1;
+			}
+		}
 	}
 	
 	
@@ -45,14 +63,22 @@ public abstract class Sprite extends Rectangle2D.Double implements Bewegungen, Z
 		
 	}	
 	private void computeAnimation(){
-		currentpic++;        // Hier lassen wir unsere Bilder durchlaufen. Momentan nur von 0 bis n, kann bzw sollte aber später noch etwas ausgebaut werden
+		currentpic++;        // Hier lassen wir unsere Bilder durchlaufen. Jetzt unter Berücksichtigung von loop_from und loop_to
+							 // gegebenenfalls wird dadurch nicht mehr das komplette Bild-Array berücksichtigt
 		
-		if (currentpic >= pics.length){    
-			currentpic = 0;
+		if (currentpic >= loop_to){    
+			currentpic = loop_from;
 		}
 		
 	}
 
+	public void setLoop(int from, int to){
+		
+		loop_from = from;
+		loop_to = to;
+		currentpic = from;
+		
+	}
 	public void bewegen(long delta) {  
 		// Wenn unser Delta nicht null ist, verändern wir so die Position unseres Objektes in die entsprechende Richtung
 		// Durch die Berücksichtigung der Durchlaufzeit, müsste somit eine gleichförmige Bewegung gewährleistet sein
@@ -82,5 +108,12 @@ public abstract class Sprite extends Rectangle2D.Double implements Bewegungen, Z
 	public void svertikalspeed(double dy) {
 		this.dy = dy;
 	}
+	
+	public int getObj(){
+		
+		return 0;
+		
+	}
+
 	
 }
