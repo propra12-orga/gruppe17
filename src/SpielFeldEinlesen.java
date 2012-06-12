@@ -8,7 +8,12 @@ import java.io.File;
  
 
 
-//LIEST XML DATEI EIN UND GIBT NEUES SPIELFELD-ARRAY VOM TYP FELD[][] ZURUECK. SPIELFELD.LENGTH IST MINDESTENS 2 UND MAXIMAL 40;
+/**
+ * LIEST XML DATEI EIN UND GIBT NEUES SPIELFELD-ARRAY VOM TYP FELD[][] ZURUECK. SPIELFELD.LENGTH IST MINDESTENS 2 UND MAXIMAL 40;
+ * 
+ * 
+ *
+ */
 public class SpielFeldEinlesen {
 	
 	Feld[][] Spielfeld;
@@ -40,9 +45,22 @@ public class SpielFeldEinlesen {
 						Element eElement = (Element) nNode;
 						
 						s = getTagValue("Typ", eElement);						
-						if(s.equals("Weg")) Spielfeld[i][j] = new Feld(3);						
-						if(s.equals("unzerstoerbar")) Spielfeld[i][j] = new Feld(2);
-						if(s.equals("zerstoerbar")) Spielfeld[i][j] = new Feld (1);
+						if(s.equals("Weg")){
+							Spielfeld[i][j] = new Feld(3);						
+							continue;
+						}
+						if(s.equals("unzerstoerbar")) {
+							Spielfeld[i][j] = new Feld(2);
+							continue;
+						}
+						if(s.equals("zerstoerbar")) {
+							Spielfeld[i][j] = new Feld (1);
+							continue;
+						}
+						if(s.equals("Ausgang")) {
+							Spielfeld[i][j] = new Feld (4);
+							continue;
+						}
 					}
 				}
 			}
@@ -51,6 +69,10 @@ public class SpielFeldEinlesen {
 		  }
 	}
 	
+	/*
+	 * gibt das Spielfeld zurück
+	 * 
+	 */
 	public Feld[][] getSpielfeld(){
 		return Spielfeld;
 	}

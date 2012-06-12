@@ -1,5 +1,12 @@
 
+/**
+ * dynamische, einzeln verkettete Liste, element ist das Item und next die darauf folgende ItemListe
+ * 
+ * 
+ *
+ */
 public class ItemListe {
+	
 	Item element;
 	ItemListe next;
 	

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<level>
+	<Feld>
+		<Typ>Weg</Typ>
+	</Feld>
+	<Feld>
+		<Typ>unzerstoerbar</Typ>
+	</Feld>
+	<Feld>
+		<Typ>zerstoerbar</Typ>
+	</Feld>
+	<Feld>
+		<Typ>Weg</Typ>
+	</Feld>
+</level>

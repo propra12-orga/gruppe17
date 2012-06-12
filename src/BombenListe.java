@@ -1,7 +1,18 @@
-
+/**
+ * dynamische, einzeln verkettete Liste. "element" ist die Bombe und "next" die nächste BombenListe
+ * 
+ *
+ *
+ */
 public class BombenListe {
+	
 	Bombe element;
 	BombenListe next;
+	
+	public BombenListe(){
+		element = null;
+		next = null;		
+	}
 	
 	public BombenListe(Bombe ele, BombenListe n){
 		element = ele;
