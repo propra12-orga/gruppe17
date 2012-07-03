@@ -27,6 +27,7 @@ public class DetonationRadius extends Thread {
 
 	}
 	
+	@Override
 	public void run(){
 		Gamepanel.Zeichner.Detonation(unten, links, oben, rechts, x, y);
 		

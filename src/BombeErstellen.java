@@ -13,6 +13,9 @@ public class BombeErstellen extends Thread {
 	int x_Spieler1, y_Spieler1, x_Spieler2, y_Spieler2;
 	int kaputt_rechts, kaputt_links, kaputt_oben, kaputt_unten;
 	int BombenCount;
+	int vonSpieler;
+	ItemListe ItemNode;
+	int reichweite;
 	/**
 	 * 
 	 * @param a x-Koordinate im Spielfeld
@@ -20,19 +23,25 @@ public class BombeErstellen extends Thread {
 	 * @param c Reichweite der Bombe
 	 * @param d Zeit
 	 */
-	public BombeErstellen(int a, int b, int c, int d){
+	public BombeErstellen(int a, int b, int c, int d, int e){
 		x = a; 	
 		y = b; 	
 		r = c;	
 		time = d;
 		BombenCount = 0;
-		
+		vonSpieler = e;
+//		if(e == 1){
+//			reichweite = Gamepanel.Spieler.BombenReichweite;
+//		} else if(e == 2){
+//			reichweite = Gamepanel.Spieler2.BombenReichweite;
+//		}
 	}
 
 	/*
 	 * erstellt die Bombe, löscht sie nach einiger Zeit wieder und verändert das Spielfeld
 	 * 
 	 */
+	@Override
 	public void run() {
 		
 		erstelleBombe();
@@ -41,10 +50,10 @@ public class BombeErstellen extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+		if(vonSpieler == 1){
+			Gamepanel.Spieler.BombenAnzahl+=1;
+		} else Gamepanel.Spieler2.BombenAnzahl+=1;
 		loescheBombe(x, y);
-		
-		
 	}
 	/*
 	 *erstellt eine neue Bombe und fügen sie am Ende unserer BombenListe ein
@@ -74,10 +83,15 @@ public class BombeErstellen extends Thread {
 	 * @param y y-Koordinate im Spielfeld
 	 */
 	public void loescheBombe(int a, int b){
+		
 		kaputt_rechts = 0;
 		kaputt_links = 0;
 		kaputt_oben = 0;
 		kaputt_unten = 0;
+		
+//		if(vonSpieler == 1){
+//			Gamepanel.Spieler.BombenAnzahl+=1;
+//		} else Gamepanel.Spieler2.BombenAnzahl+=1;
 		
 		BombNode = Gamepanel.BombHead;
 		if(Gamepanel.BombHead != null){
@@ -85,16 +99,12 @@ public class BombeErstellen extends Thread {
 				Gamepanel.BombHead.getBombe().setZeit(Gamepanel.BombHead.getBombe().getZeit() + time);
 				Gamepanel.BombHead = null;
 				machKaputt(a, b, r);
-//				DetonationRadius Detonation = new DetonationRadius(kaputt_unten, kaputt_links, kaputt_oben, kaputt_rechts, a, b);
-//				Detonation.start();
 			}
 				else {
 					if(Gamepanel.BombHead.getBombe().getX() == a && Gamepanel.BombHead.getBombe().getY() == b){
 						Gamepanel.BombHead.getBombe().setZeit(Gamepanel.BombHead.getBombe().getZeit() + time);
 						Gamepanel.BombHead = Gamepanel.BombHead.next;
 						machKaputt(a, b, r);
-//						DetonationRadius Detonation = new DetonationRadius(kaputt_unten, kaputt_links, kaputt_oben, kaputt_rechts, a, b);
-//						Detonation.start();
 					}
 					BombNode = Gamepanel.BombHead;
 					if(BombNode != null){
@@ -106,8 +116,6 @@ public class BombeErstellen extends Thread {
 							BombNode.getBombe().setZeit(BombNode.getBombe().getZeit() + time);
 							BombNode.setNext(BombNode.next.getNext());
 							machKaputt(a, b, r);
-//							DetonationRadius Detonation = new DetonationRadius(kaputt_unten, kaputt_links, kaputt_oben, kaputt_rechts, a, b);
-//							Detonation.start();
 						}
 					}
 				}
@@ -141,6 +149,9 @@ public class BombeErstellen extends Thread {
 		
 		
 		for(int i = 1; i<=r; i++){
+			new SoundCheck("boom.wav");
+			new SoundCheck("Spitfire2.wav");
+			
 			if(Gamepanel.Spielfeld[b][a+i].zerstoerbar){
 				Gamepanel.Spielfeld[b][a+i].setWeg();
 				Gamepanel.erstelleItem(a+i, b);
@@ -154,13 +165,10 @@ public class BombeErstellen extends Thread {
 			if(x_Spieler2 == a+i && y_Spieler2 == b){
 				Gamepanel.Spieler2.stirb();
 			}
+			if(liegtItem(a + i , b)){
+				entferneItem(a + i, b);
+			}
 			
-//			if (liegtBombe(a+i,b)){
-////				int Reichweite = BombeAnStelle(a+i,b).getReichweite();
-//				
-//				loescheBombe(a+i,b);
-////				BombenCount++;
-//			}
 			kaputt_rechts++;
 		}
 		for(int i = 1; i<=r; i++){
@@ -177,11 +185,10 @@ public class BombeErstellen extends Thread {
 			if(x_Spieler2 == a-i && y_Spieler2 == b){
 				Gamepanel.Spieler2.stirb();
 				}
-//			if (liegtBombe(a-i,b)){
-////				int Reichweite = BombeAnStelle(a-i,b).getReichweite();
-//				loescheBombe(a-i,b);
-////				BombenCount++;
-//			}
+
+			if(liegtItem(a - i , b)){
+				entferneItem(a - i, b);
+			}
 			kaputt_links++;
 		}
 		for(int i = 1; i<=r; i++){
@@ -198,11 +205,10 @@ public class BombeErstellen extends Thread {
 			if(x_Spieler2 == a && y_Spieler2 == b+i){
 				Gamepanel.Spieler2.stirb();
 				}
-//			if (liegtBombe(a,b+i)){
-////				int Reichweite = BombeAnStelle(a,b+i).getReichweite();
-//				loescheBombe(a,b+i);
-////				BombenCount++;
-//			}
+
+			if(liegtItem(a , b + i)){
+				entferneItem(a , b + i);
+			}
 			kaputt_oben++;
 		}
 		for(int i = 1; i<=r; i++){
@@ -220,24 +226,18 @@ public class BombeErstellen extends Thread {
 			if(x_Spieler2 == a && y_Spieler2 == b+i){
 				Gamepanel.Spieler2.stirb();
 			}
-//			if (liegtBombe(a,b-i)){
-////				int Reichweite = BombeAnStelle(a,b-i).getReichweite();
-//				loescheBombe(a,b-i);
-////				BombenCount++;
-//			}
+
+			if(liegtItem(a , b - i)){
+				entferneItem(a , b - i);
+			}
 			kaputt_unten++;
 		}
 		DetonationRadius Detonation = new DetonationRadius(kaputt_unten, kaputt_links, kaputt_oben, kaputt_rechts, a, b);
 		Detonation.start();
-//		kaputt_rechts = 0;
-//		kaputt_links = 0;
-//		kaputt_oben = 0;	
-//		kaputt_unten = 0;
 		
 		Kettenreaktion(kaputt_unten, kaputt_links, kaputt_oben, kaputt_rechts, a, b);
 		
 	}
-	
 	
 	// Vorsicht, oben und unten vertauscht!
 	public void Kettenreaktion(int unten, int links, int oben, int rechts, int x, int y){
@@ -313,7 +313,51 @@ public class BombeErstellen extends Thread {
 				}
 			}
 		return null;
-		
-		
 	}
+	
+	public boolean liegtItem(int a, int b){
+		ItemNode = Gamepanel.ItemHead;
+		if(ItemNode == null){
+			return false;
+		}
+			else {
+				if(ItemNode.getItem().getX() == a && ItemNode.getItem().getY() == b){
+					return true;
+				}
+				while(ItemNode.next != null){
+				if(ItemNode.next.getItem().getX() == a && ItemNode.next.getItem().getY() == b) return true;
+				ItemNode = ItemNode.next;
+				}
+			}
+		return false;
+	}
+	
+	public void entferneItem(int a, int b){
+
+		ItemNode = Gamepanel.ItemHead;
+		if(Gamepanel.ItemHead != null){
+			if(Gamepanel.ItemHead.next == null && Gamepanel.ItemHead.getItem().getX() == a && Gamepanel.ItemHead.getItem().getY() == b){
+				Gamepanel.ItemHead = null;
+			}
+				else {
+					if(Gamepanel.ItemHead.getItem().getX() == a && Gamepanel.ItemHead.getItem().getY() == b){
+						Gamepanel.ItemHead = Gamepanel.ItemHead.next;
+					}
+					ItemNode = Gamepanel.ItemHead;
+					if(ItemNode != null){
+						while(ItemNode.next != null){
+						if(ItemNode.next.getItem().getX() == a && ItemNode.next.getItem().getY() == b) break;
+						ItemNode = ItemNode.next;
+						}
+						if(ItemNode.next != null && ItemNode.next.getItem().getX() == a && ItemNode.next.getItem().getY() == b){
+							ItemNode.setNext(ItemNode.next.getNext());
+						}
+					}
+				}
+		 	}
+		Gamepanel.Spielfeld[b][a].liegtItem = false;
+		}
 }
+
+
+

@@ -11,6 +11,7 @@ public class Feld {
 	boolean unzerstoerbar = false;
 	boolean begehbar = false;
 	boolean Ausgang = false;
+	boolean liegtItem = false;
 	
 	
 	public Feld(int i){

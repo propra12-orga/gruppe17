@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.io.File;
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -36,21 +35,27 @@ public class Grafik extends JPanel {
 	public BufferedImage FlammeCenter;
 	public BufferedImage[] Flamme = new BufferedImage[4];
 	public BufferedImage[] FlammenSpitze = new BufferedImage[4];
-	public BufferedImage[] Kenny_run_re = new BufferedImage[4];
-	public BufferedImage[] Kenny_run_li = new BufferedImage[4];
-	public BufferedImage[] Kenny_run = new BufferedImage[4];
-	public BufferedImage[] Kenny_ho_li = new BufferedImage[4];
-	public BufferedImage[] Kenny_ho_re = new BufferedImage[4];
-	public BufferedImage[] Kenny_ho = new BufferedImage[4];
-	public BufferedImage[] Kenny_li = new BufferedImage[4];
-	public BufferedImage[] Kenny_re = new BufferedImage[4];
-	public BufferedImage[] Cartman_run = new BufferedImage[4];
-	public BufferedImage[] Cartman_li = new BufferedImage[4];
-	public BufferedImage[] Cartman_re = new BufferedImage[4];
-	public BufferedImage[] Cartman_ho = new BufferedImage[4];
+	public BufferedImage[] Schaf_run_re = new BufferedImage[4];
+	public BufferedImage[] Schaf_run_li = new BufferedImage[4];
+	public BufferedImage[] Schaf_run = new BufferedImage[4];
+	public BufferedImage[] Schaf_ho_li = new BufferedImage[4];
+	public BufferedImage[] Schaf_ho_re = new BufferedImage[4];
+	public BufferedImage[] Schaf_ho = new BufferedImage[4];
+	public BufferedImage[] Schaf_li = new BufferedImage[4];
+	public BufferedImage[] Schaf_re = new BufferedImage[4];
+	public BufferedImage[] Hirte_run = new BufferedImage[4];
+	public BufferedImage[] Hirte_li = new BufferedImage[4];
+	public BufferedImage[] Hirte_re = new BufferedImage[4];
+	public BufferedImage[] Hirte_ho = new BufferedImage[4];
+	public BufferedImage[] Hirte_run_re = new BufferedImage[4];
+	public BufferedImage[] Hirte_run_li = new BufferedImage[4];
+	public BufferedImage[] Hirte_ho_re = new BufferedImage[4];
+	public BufferedImage[] Hirte_ho_li = new BufferedImage[4];
 	public BufferedImage[] Items = new BufferedImage[6];
-	int Kenny_Index; //Gibt an, welches Animations-Bild an der Reihe ist
-	int Cartman_Index;
+	public BufferedImage[] Menu = new BufferedImage[4];
+	public BufferedImage[] Winner = new BufferedImage[4];
+	int Schaf_Index; //Gibt an, welches Animations-Bild an der Reihe ist
+	int Hirte_Index;
 	
 	
 	Bomberman Spieler1;
@@ -67,26 +72,58 @@ public class Grafik extends JPanel {
 	long system_millis;
 	long bomb_time;
 	long neueRichtung, neueRichtung2;
+	
+	public boolean Spieler1_wins;
+	public boolean Spieler2_wins;
+	public boolean Spieler1_stirbt;
+	public boolean winner;
 
-	long last, fps, delta;
+	long last, fps, delta = 0;
 	BombenListe bomblist;
 	BombenListe hilfslist;
 	int Bomb_Index;
 	ItemListe Itemlist;
 	ItemListe hilfslist_item;
+	FlugItemListe FlugItemList;
+	FlugItemListe hilfslist_flugitem;
 
 	
 	
 	
 	public Grafik(){
-//		Spieler1 = Gamepanel.Spieler;
-//		if(Gamepanel.Ende){
-//			Spieler2 = Gamepanel.Spieler2;
-//		}
+
+		frame = new JFrame("Bomberman");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(1024,768);
+		frame.setPreferredSize(frame.getSize());
+		frame.setLocationRelativeTo(null);
+		frame.setResizable(false);
+
+		
+		this.setSize(1024,768);
+		this.setPreferredSize(new Dimension(1024,768));
+		this.setBackground(Color.WHITE);
+		this.setOpaque(false);
+		this.setOpaque(false);
+
+		FeldPanel = new JPanel();
+		FeldPanel.setSize(new Dimension(frame.getSize()));
+		FeldPanel.setPreferredSize(new Dimension(frame.getSize()));
+		FeldPanel.setLayout(new BorderLayout());
+		FeldPanel.setBackground(Color.WHITE);
+		FeldPanel.add(this, BorderLayout.EAST);
+
+		frame.getContentPane().add(FeldPanel);
+		frame.pack();
+		frame.setVisible(true);
+
+		ladeBilder();
+		repaint();
+		
+	}
+	
+	public void Init(){
 		n = Gamepanel.Spielfeld.length;
-		frame = new JFrame("Test");
-		frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
-//		frame.setSize(1024,768);
 		frame.setSize(FeldSize*(n), FeldSize*(n)+30);
 		frame.setPreferredSize(frame.getSize());
 		frame.setLocationRelativeTo(null);
@@ -98,7 +135,6 @@ public class Grafik extends JPanel {
 		this.setOpaque(false);
 		this.setOpaque(false);
 		
-		FeldPanel = new JPanel();
 		FeldPanel.setSize(new Dimension(frame.getSize()));
 		FeldPanel.setPreferredSize(new Dimension(frame.getSize()));
 		FeldPanel.setLayout(new BorderLayout());
@@ -108,17 +144,13 @@ public class Grafik extends JPanel {
 		frame.getContentPane().add(FeldPanel);
 		frame.pack();
 		frame.setVisible(true);
-		
-		ladeBilder();
-//		repaint();
-
 	}
-	
 
 	/**
 	 * Unsere eigentliche Zeichenmethode, in der alles graphisch dargestellt wird
 	 * 
 	 */
+	@Override
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
 			/*
@@ -126,78 +158,96 @@ public class Grafik extends JPanel {
 			 */
 		
 		system_millis = System.currentTimeMillis();
-		
-		if(!Gamepanel.Ende){
-				paintSpielfeld(g);
-			
-			/*
-			 * Bomben-Darstellung
-			 */
-			if(Gamepanel.BombHead != null){
-				paintBomben(g);
-			}
-			/*
-			 * Spieler-Darstellung
-			 */
-			if(Spieler1 != null && !Spieler1.tot){
-				paintSpieler1(g);
-			}
-			if(Spieler2 != null && !Spieler2.tot){
-				paintSpieler2(g);	
-			}
-			paintItems(g);
-			/*
-			 * Detonations-Darstellung
-			 */
-			if(detonation>0){
-				paintDetonation(g);
-			}
-			
-		}	
+
+
+		if(!Spieler1_wins && !Spieler2_wins && !Spieler1_stirbt && !winner){
+			if(Gamepanel.init){
+	
+					paintSpielfeld(g);
+				
+				/*
+				 * Bomben-Darstellung
+				 */
+				if(Gamepanel.BombHead != null){
+					paintBomben(g);
+				}
+				/*
+				 * Spieler-Darstellung
+				 */
+				if(Spieler1 != null && !Spieler1.tot){
+					paintSpieler1(g);
+				}
+				if(Spieler2 != null && !Spieler2.tot){
+					paintSpieler2(g);	
+				}
+				paintItems(g);
+				paintFlugItems(g);
+				/*
+				 * Detonations-Darstellung
+				 */
+				if(detonation>0){
+					paintDetonation(g);
+				}
+				
+				
+			} else g.drawImage(Menu[Gamepanel.zaehler],0,0,this);	
+		} else if(Spieler1_wins){
+			g.drawImage(Winner[0],0,0,this);
+		} else if(Spieler2_wins){
+			g.drawImage(Winner[1],0,0,this);
+		} else if(Spieler1_stirbt){
+			g.drawImage(Winner[2],0,0,this);
+		} else {
+			g.drawImage(Winner[3],0,0,this);
+		}
 	}
 	
 	public void paintSpieler1(Graphics g){
 		Spieler1_x = (int)Spieler1.getX();
 		Spieler1_y = (int)Spieler1.getY();
-		Kenny_Index = (int) ((system_millis - neueRichtung) / 200) % 4;
+		Schaf_Index = (int) ((system_millis - neueRichtung) / 200) % 4;
 		
-		if(Gamepanel.runter){
-			if(Gamepanel.rechts){
-				g.drawImage(Kenny_run_re[Kenny_Index], Spieler1_x, Spieler1_y, this);	
-			} else if(Gamepanel.links){
-				g.drawImage(Kenny_run_li[Kenny_Index], Spieler1_x, Spieler1_y, this);	
+		if(TastenCheck.runter){
+			if(TastenCheck.rechts){
+				g.drawImage(Schaf_run_re[Schaf_Index], Spieler1_x, Spieler1_y, this);	
+			} else if(TastenCheck.links){
+				g.drawImage(Schaf_run_li[Schaf_Index], Spieler1_x, Spieler1_y, this);	
 			} else {
-				g.drawImage(Kenny_run[Kenny_Index], Spieler1_x, Spieler1_y, this);	
+				g.drawImage(Schaf_run[Schaf_Index], Spieler1_x, Spieler1_y, this);	
 			}
-		} else if(Gamepanel.hoch){
-			if(Gamepanel.rechts){
-				g.drawImage(Kenny_ho_re[Kenny_Index], Spieler1_x, Spieler1_y, this);	
-			} else if(Gamepanel.links){
-				g.drawImage(Kenny_ho_li[Kenny_Index], Spieler1_x, Spieler1_y, this);	
+		} else if(TastenCheck.hoch){
+			if(TastenCheck.rechts){
+				g.drawImage(Schaf_ho_re[Schaf_Index], Spieler1_x, Spieler1_y, this);	
+			} else if(TastenCheck.links){
+				g.drawImage(Schaf_ho_li[Schaf_Index], Spieler1_x, Spieler1_y, this);	
 			} else {
-				g.drawImage(Kenny_ho[Kenny_Index], Spieler1_x, Spieler1_y, this);	
+				g.drawImage(Schaf_ho[Schaf_Index], Spieler1_x, Spieler1_y, this);	
 			}
-			} else if(Gamepanel.links){
-				g.drawImage(Kenny_li[Kenny_Index], Spieler1_x, Spieler1_y, this);	
-			} else if(Gamepanel.rechts){		
-				g.drawImage(Kenny_re[Kenny_Index], Spieler1_x, Spieler1_y, this);	
-			} else g.drawImage(Kenny_run[0], Spieler1_x, Spieler1_y, this);	
+			} else if(TastenCheck.links){
+				g.drawImage(Schaf_li[Schaf_Index], Spieler1_x, Spieler1_y, this);	
+			} else if(TastenCheck.rechts){		
+				g.drawImage(Schaf_re[Schaf_Index], Spieler1_x, Spieler1_y, this);	
+			} else g.drawImage(Schaf_run[0], Spieler1_x, Spieler1_y, this);	
 	}
 	
 	public void paintSpieler2(Graphics g){
 		Spieler2_x = (int)Spieler2.getX();
 		Spieler2_y = (int)Spieler2.getY();
-		Cartman_Index = (int) ((system_millis - neueRichtung2) / 200) % 4;
+		Hirte_Index = (int) ((system_millis - neueRichtung2) / 200) % 4;
 		
-		if(Gamepanel.runter2){
-			g.drawImage(Cartman_run[Cartman_Index], Spieler2_x, Spieler2_y, this);	
-		} else if(Gamepanel.hoch2){
-			g.drawImage(Cartman_ho[Cartman_Index], Spieler2_x, Spieler2_y, this);	
-		} else if(Gamepanel.rechts2){
-			 g.drawImage(Cartman_re[0], Spieler2_x, Spieler2_y, this);	
-		} else if(Gamepanel.links2){
-			 g.drawImage(Cartman_li[0], Spieler2_x, Spieler2_y, this);	
-		} else g.drawImage(Cartman_run[0], Spieler2_x, Spieler2_y, this);
+		if(TastenCheck.runter2){
+			if(TastenCheck.links2) g.drawImage(Hirte_run_li[Hirte_Index], Spieler2_x, Spieler2_y, this);	
+			else if(TastenCheck.rechts2) g.drawImage(Hirte_run_re[Hirte_Index], Spieler2_x, Spieler2_y, this);	
+			else g.drawImage(Hirte_run[Hirte_Index], Spieler2_x, Spieler2_y, this);	
+		} else if(TastenCheck.hoch2){
+			if(TastenCheck.links2) g.drawImage(Hirte_ho_li[Hirte_Index], Spieler2_x, Spieler2_y, this);	
+			else if(TastenCheck.rechts2) g.drawImage(Hirte_ho_re[Hirte_Index], Spieler2_x, Spieler2_y, this);	
+			else g.drawImage(Hirte_ho[Hirte_Index], Spieler2_x, Spieler2_y, this);	
+		} else if(TastenCheck.rechts2){
+			 g.drawImage(Hirte_re[Hirte_Index], Spieler2_x, Spieler2_y, this);	
+		} else if(TastenCheck.links2){
+			 g.drawImage(Hirte_li[Hirte_Index], Spieler2_x, Spieler2_y, this);	
+		} else g.drawImage(Hirte_run[0], Spieler2_x, Spieler2_y, this);
 	}
 	
 	public void paintBomben(Graphics g){
@@ -216,11 +266,11 @@ public class Grafik extends JPanel {
 		for(int i=0;i<n;i++){
 			for(int j=0;j<n;j++){
 					if(Gamepanel.Spielfeld[i][j].begehbar){
+						g.drawImage(Weg, j*FeldSize, i*FeldSize, this);
 						if(Gamepanel.Spielfeld[i][j].Ausgang) {
 							g.drawImage(Ausgang, j*FeldSize, i*FeldSize, this);
 							continue;
 						}
-						g.drawImage(Weg, j*FeldSize, i*FeldSize, this);
 						continue;
 					}
 					if(Gamepanel.Spielfeld[i][j].unzerstoerbar){
@@ -234,7 +284,10 @@ public class Grafik extends JPanel {
 			}
 		}
 	}
-	
+	/**
+	 * Zeichnet die Detonation
+	 * @param g
+	 */
 	public void paintDetonation(Graphics g){
 		for(int i = 0; i < detonation; i++){
 			g.drawImage(FlammeCenter, det_x[i] * FeldSize, det_y[i] * FeldSize, this);
@@ -262,9 +315,8 @@ public class Grafik extends JPanel {
 			if (det_rechts[i] != 0) {
 				g.drawImage(FlammenSpitze[3], (det_x[i] + det_rechts[i]) * FeldSize, det_y[i] * FeldSize, this);
 			}
-			if (system_millis - det_time[i] > 1000){
+			if (system_millis - det_time[i] > 500){
 				detonation -=1;
-//				System.out.println("Detonation: "+ detonation);
 			}
 		}
 	}
@@ -274,15 +326,27 @@ public class Grafik extends JPanel {
 
 		while(hilfslist_item != null){
 			
-			g.drawImage(Items[hilfslist_item.getItem().getIndex()], hilfslist_item.getItem().x * FeldSize ,hilfslist_item.getItem().y * FeldSize , this);
+			g.drawImage(Items[hilfslist_item.getItem().getIndex()], hilfslist_item.getItem().getX() * FeldSize ,hilfslist_item.getItem().getY() * FeldSize , this);
 			
 			hilfslist_item = hilfslist_item.next;
 		}
 		
 	}
 	
+	public void paintFlugItems(Graphics g){
+		  
+		  hilfslist_flugitem=Gamepanel.FlugItemHead;
+		  
+		  while(hilfslist_flugitem!=null){
+		   
+		   
+		   g.drawImage(Bombe[0],(int) hilfslist_flugitem.getItem().getX(),(int)hilfslist_flugitem.getItem().getY(),this );
+		   hilfslist_flugitem=hilfslist_flugitem.next;
+		  }
+		  
+		 }
+	
 	public void Detonation(int a, int b, int c, int d, int e, int f){
-		System.out.println("GrafikMethode Detonation, oben: " + a + " links: " + b + " unten: " + c + " rechts: " + d);
 		
 		det_time[detonation] = System.currentTimeMillis();
 		det_unten[detonation] = a;
@@ -312,22 +376,60 @@ public class Grafik extends JPanel {
 		neueRichtung2 = System.currentTimeMillis();
 	}
 	
+	private void berechneFPS() {
+
+		delta = System.nanoTime() - last;
+		last = System.nanoTime();
+		fps = ((long) 1e9)/delta;
+		
+	}
+	
+	public void setFrame(){
+		System.out.println("BLABLABLA");
+		frame.setSize(1024,768);
+		frame.setPreferredSize(frame.getSize());
+		frame.setLocationRelativeTo(null);
+		frame.setResizable(false);
+
+		this.setSize(1024,768);
+		this.setPreferredSize(new Dimension(1024,768));
+		this.setBackground(Color.WHITE);
+		this.setOpaque(false);
+		this.setOpaque(false);
+
+		FeldPanel.setSize(new Dimension(frame.getSize()));
+		FeldPanel.setPreferredSize(new Dimension(frame.getSize()));
+		FeldPanel.setLayout(new BorderLayout());
+		FeldPanel.setBackground(Color.WHITE);
+		FeldPanel.add(this, BorderLayout.EAST);
+
+		frame.getContentPane().add(FeldPanel);
+		frame.pack();
+		frame.setVisible(true);
+		
+	}
+	
+	
 /**
  * HIER EINFACH ALLE BILDER EINLADEN, DIE GEBRAUCHT WERDEN.
  * 
  */
 public void ladeBilder(){
 	
+	Menu[0] = ladeBild("Menu1.jpg");
+	Menu[1] = ladeBild("Menu2.jpg");
+	Menu[2] = ladeBild("Menu3.jpg");
+	Menu[3] = ladeBild("Menu4.jpg");
 	Weg = ladeBild("spielfeld.png");
 	Stein = ladeBild("Brick2.png");
 	uStein = ladeBild("Block.png");
-	Spieler = ladeBild("kenny.png");
+//	Spieler = ladeBild("Schaf.png");
 	Bombe[0] = ladeBild("bomb1.png");
 	Bombe[1] = ladeBild("bomb2.png");
 	Bombe[2] = ladeBild("bomb3.png");
 	Bombe[3] = ladeBild("bomb4.png");
 	Bombe[4] = ladeBild("bomb5.png");
-	Ausgang = ladeBild("Ausgang.png");
+	Ausgang = ladeBild("exit.png");
 	FlammeCenter = ladeBild("center.png");
 	Flamme[0] = ladeBild("fire-block-down.png");
 	Flamme[1] = ladeBild("fire-block-left.png");
@@ -337,49 +439,80 @@ public void ladeBilder(){
 	FlammenSpitze[1] = ladeBild("spitze-left.png");
 	FlammenSpitze[2] = ladeBild("spitze-up.png");
 	FlammenSpitze[3] = ladeBild("spitze-right.png");
-	Kenny_ho_li[0] = ladeBild("Kenny_ho_li1.png");
-	Kenny_ho_li[1] = ladeBild("Kenny_ho_li2.png");
-	Kenny_ho_li[2] = Kenny_ho_li[0];
-	Kenny_ho_li[3] = ladeBild("Kenny_ho_li3.png");
-	Kenny_ho_re[0] = ladeBild("Kenny_ho_re1.png");
-	Kenny_ho_re[1] = ladeBild("Kenny_ho_re2.png");
-	Kenny_ho_re[2] = Kenny_ho_re[0];
-	Kenny_ho_re[3] = ladeBild("Kenny_ho_re3.png");
-	Kenny_ho[0] = ladeBild("Kenny_ho1.png");
-	Kenny_ho[1] = ladeBild("Kenny_ho2.png");
-	Kenny_ho[2] = Kenny_ho[0];
-	Kenny_ho[3] = ladeBild("Kenny_ho3.png");
-	Kenny_li[0] = ladeBild("Kenny_li1.png");
-	Kenny_li[1] = ladeBild("Kenny_li2.png");
-	Kenny_li[2] = ladeBild("Kenny_li1.png");
-	Kenny_li[3] = ladeBild("Kenny_li2.png");
-	Kenny_re[0] = ladeBild("Kenny_re1.png");
-	Kenny_re[1] = ladeBild("Kenny_re2.png");
-	Kenny_re[2] = ladeBild("Kenny_re1.png");
-	Kenny_re[3] = ladeBild("Kenny_re2.png");
-	Kenny_run_li[0] = ladeBild("Kenny_ru_li1.png");
-	Kenny_run_li[1] = ladeBild("Kenny_ru_li2.png");
-	Kenny_run_li[2] = Kenny_run_li[0];
-	Kenny_run_li[3] = ladeBild("Kenny_ru_li3.png");
-	Kenny_run_re[0] = ladeBild("Kenny_ru_re1.png");
-	Kenny_run_re[1] = ladeBild("Kenny_ru_re2.png");
-	Kenny_run_re[2] = Kenny_run_re[0];
-	Kenny_run_re[3] = ladeBild("Kenny_ru_re3.png");
-	Kenny_run[0] = ladeBild("Kenny_run1.png");
-	Kenny_run[1] = ladeBild("Kenny_run2.png");
-	Kenny_run[2] = Kenny_run[0];
-	Kenny_run[3] = ladeBild("Kenny_run3.png");
-	Cartman_run[0] = ladeBild("Cartman_run1.png");
-	Cartman_run[1] = ladeBild("Cartman_run2.png");
-	Cartman_run[2] = Cartman_run[0];
-	Cartman_run[3] = ladeBild("Cartman_run3.png");
-	Cartman_ho[0] = ladeBild("Cartman_ho1.png");
-	Cartman_ho[1] = ladeBild("Cartman_ho2.png");
-	Cartman_ho[2] = Cartman_ho[0];
-	Cartman_ho[3] = ladeBild("Cartman_ho3.png");
-	Cartman_re[0] = ladeBild("Cartman_re1.png");
-	Cartman_li[0] = ladeBild("Cartman_li1.png");
-	Items[0] = ladeBild("handschuh.png");
+	Schaf_ho_li[0] = ladeBild("Schaf_ho_li1.png");
+	Schaf_ho_li[2] = ladeBild("Schaf_ho_li1.png");
+	Schaf_ho_li[1] = ladeBild("Schaf_ho_li2.png");
+	Schaf_ho_li[3] = ladeBild("Schaf_ho_li2.png");
+	Schaf_ho_re[0] = ladeBild("Schaf_ho_re1.png");
+	Schaf_ho_re[2] = ladeBild("Schaf_ho_re1.png");
+	Schaf_ho_re[1] = ladeBild("Schaf_ho_re2.png");
+	Schaf_ho_re[3] = ladeBild("Schaf_ho_re2.png");
+	Schaf_ho[0] = ladeBild("Schaf_ho1.png");
+	Schaf_ho[2] = ladeBild("Schaf_ho1.png");
+	Schaf_ho[1] = ladeBild("Schaf_ho2.png");
+	Schaf_ho[3] = ladeBild("Schaf_ho2.png");
+	Schaf_li[0] = ladeBild("Schaf_li1.png");
+	Schaf_li[2] = ladeBild("Schaf_li1.png");
+	Schaf_li[1] = ladeBild("Schaf_li2.png");
+	Schaf_li[3] = ladeBild("Schaf_li2.png");
+	Schaf_re[0] = ladeBild("Schaf_re1.png");
+	Schaf_re[2] = ladeBild("Schaf_re1.png");
+	Schaf_re[1] = ladeBild("Schaf_re2.png");
+	Schaf_re[3] = ladeBild("Schaf_re2.png");
+	Schaf_run_li[0] = ladeBild("Schaf_run1.png");
+	Schaf_run_li[2] = ladeBild("Schaf_run1.png");
+	Schaf_run_li[1] = ladeBild("Schaf_run1.png");
+	Schaf_run_li[3] = ladeBild("Schaf_run1.png");
+	Schaf_run_re[0] = ladeBild("Schaf_run1.png");
+	Schaf_run_re[2] = ladeBild("Schaf_run1.png");
+	Schaf_run_re[1] = ladeBild("Schaf_run1.png");
+	Schaf_run_re[3] = ladeBild("Schaf_run1.png");
+	Schaf_run[0] = ladeBild("Schaf_run1.png");
+	Schaf_run[2] = ladeBild("Schaf_run1.png");
+	Schaf_run[1] = ladeBild("Schaf_run2.png");
+	Schaf_run[3] = ladeBild("Schaf_run2.png");
+	Hirte_run[0] = ladeBild("Hirte_run1.png");
+	Hirte_run[2] = ladeBild("Hirte_run2.png");
+	Hirte_run[1] = Hirte_run[0];
+	Hirte_run[3] = ladeBild("Hirte_run3.png");
+	Hirte_ho[0] = ladeBild("Hirte_ho1.png");
+	Hirte_ho[2] = ladeBild("Hirte_ho2.png");
+	Hirte_ho[1] = Hirte_ho[0];
+	Hirte_ho[3] = ladeBild("Hirte_ho3.png");
+	Hirte_re[0] = ladeBild("Hirte_re1.png");
+	Hirte_re[2] = ladeBild("Hirte_re1.png");
+	Hirte_re[1] = ladeBild("Hirte_re2.png");
+	Hirte_re[3] = ladeBild("Hirte_re2.png");
+	Hirte_li[0] = ladeBild("Hirte_li1.png");
+	Hirte_li[2] = ladeBild("Hirte_li1.png");
+	Hirte_li[1] = ladeBild("Hirte_li2.png");
+	Hirte_li[3] = ladeBild("Hirte_li2.png");
+	Hirte_run_re[0] = ladeBild("Hirte_run_re.png");
+	Hirte_run_re[2] = ladeBild("Hirte_run_re.png");
+	Hirte_run_re[1] = ladeBild("Hirte_run_re2.png");
+	Hirte_run_re[3] = ladeBild("Hirte_run_re2.png");
+	Hirte_run_li[0] = ladeBild("Hirte_run_li.png");
+	Hirte_run_li[2] = ladeBild("Hirte_run_li.png");
+	Hirte_run_li[1] = ladeBild("Hirte_run_li2.png");
+	Hirte_run_li[3] = ladeBild("Hirte_run_li2.png");
+	Hirte_ho_re[0] = ladeBild("Hirte_ho_re.png");
+	Hirte_ho_re[2] = ladeBild("Hirte_ho_re.png");
+	Hirte_ho_re[1] = ladeBild("Hirte_ho_re2.png");
+	Hirte_ho_re[3] = ladeBild("Hirte_ho_re2.png");
+	Hirte_ho_li[0] = ladeBild("Hirte_ho_li.png");
+	Hirte_ho_li[2] = ladeBild("Hirte_ho_li.png");
+	Hirte_ho_li[1] = ladeBild("Hirte_ho_li2.png");
+	Hirte_ho_li[3] = ladeBild("Hirte_ho_li2.png");
+	Items[0] = ladeBild("feuer.png");
+	Items[1] = ladeBild("handschuh.png");
+	Items[2] = ladeBild("kicker.png");
+	Items[3] = ladeBild("extraleben.png");
+	Items[4] = ladeBild("extrabombe.png");
+	Items[5] = ladeBild("rollschuh.png");
+	Winner[0] = ladeBild("gewinnerbildschirm_schaf.jpg");
+	Winner[1] = ladeBild("gewinnerbildschirm_hirte.jpg");
+	Winner[2] = ladeBild("Looser1.jpg");
+	Winner[3] = ladeBild("Schaf_wins.jpg");
 }
 	
 /**

@@ -17,6 +17,9 @@ public class TastenCheck extends TimerTask implements Runnable, KeyListener {
 	public static boolean neueRichtung1;
 	public static boolean neueRichtung2;
 	public static boolean bombelegen;
+	public static boolean itembenutzen;
+	
+	public static boolean speichern;
 	/**
 	 * Booleans für Spieler2
 	 */
@@ -25,24 +28,30 @@ public class TastenCheck extends TimerTask implements Runnable, KeyListener {
 	public static boolean rechts2;
 	public static boolean links2;
 	public static boolean bombelegen2;
+	public static boolean itembenutzen2;
+	
+	public static boolean eingabe;
 	
 	public static boolean clear;
-	
+	public static int zaehler = 0;
 	/**
 	 * setzt entsprechende booleans bei Tastendruck auf 'true'
 	 * 
 	 */
+	@Override
 	public void keyPressed(KeyEvent k) {
 		if(k.getKeyCode() == KeyEvent.VK_UP){	
 			if(!hoch){
 				hoch = true;
 				neueRichtung1 = true;
+				zaehler = (zaehler + 3) % 4;
 			}
 		}
 		if(k.getKeyCode() == KeyEvent.VK_DOWN){
 			if(!runter){
 				runter = true;
 				neueRichtung1 = true;
+				zaehler = (zaehler + 1) % 4;
 			}
 		}
 		if(k.getKeyCode() == KeyEvent.VK_RIGHT){
@@ -95,9 +104,11 @@ public class TastenCheck extends TimerTask implements Runnable, KeyListener {
 	 * setzt entsprechende booleans bei Loslassen der jeweiligen Taste wieder auf false
 	 * 
 	 */
+	@Override
 	public void keyReleased(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_UP){	
 			hoch = false;
+			System.out.println("TASTE");
 		}
 		if(e.getKeyCode() == KeyEvent.VK_DOWN){
 			runter = false;
@@ -130,10 +141,23 @@ public class TastenCheck extends TimerTask implements Runnable, KeyListener {
 		if(e.getKeyCode() == KeyEvent.VK_C){
 			clear = false;
 		}
-		
+		if(e.getKeyCode() == KeyEvent.VK_ENTER){
+
+			eingabe = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_P){
+			speichern = true;
+		}
+		 if(e.getKeyCode() == KeyEvent.VK_SHIFT){
+			itembenutzen=true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_E){
+			itembenutzen2=true;
+		}
 	}
 
 
+	@Override
 	public void keyTyped(KeyEvent e) {
 //		if(e.getKeyCode() == KeyEvent.VK_UP){	
 //			neueRichtung1 = true;
@@ -156,6 +180,7 @@ public class TastenCheck extends TimerTask implements Runnable, KeyListener {
 	 * startet den Thread
 	 * 
 	 */
+	@Override
 	public void run() {
 	
 		
