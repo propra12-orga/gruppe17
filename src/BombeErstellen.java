@@ -31,9 +31,9 @@ public class BombeErstellen extends Thread {
 		BombenCount = 0;
 		vonSpieler = e;
 //		if(e == 1){
-//			reichweite = Gamepanel.Spieler.BombenReichweite;
+//			reichweite = Gamepanel.Player[Gamepanel.Player_Index[0]].BombenReichweite;
 //		} else if(e == 2){
-//			reichweite = Gamepanel.Spieler2.BombenReichweite;
+//			reichweite = Player[Gamepanel.Player_Index[1]].BombenReichweite;
 //		}
 	}
 
@@ -51,8 +51,8 @@ public class BombeErstellen extends Thread {
 			e.printStackTrace();
 		}
 		if(vonSpieler == 1){
-			Gamepanel.Spieler.BombenAnzahl+=1;
-		} else Gamepanel.Spieler2.BombenAnzahl+=1;
+			Gamepanel.Player[Gamepanel.Player_Index[0]].BombenAnzahl+=1;
+		} else Gamepanel.Player[Gamepanel.Player_Index[1]].BombenAnzahl+=1;
 		loescheBombe(x, y);
 	}
 	/*
@@ -91,7 +91,7 @@ public class BombeErstellen extends Thread {
 		
 //		if(vonSpieler == 1){
 //			Gamepanel.Spieler.BombenAnzahl+=1;
-//		} else Gamepanel.Spieler2.BombenAnzahl+=1;
+//		} else Player[Gamepanel.Player_Index[1]].BombenAnzahl+=1;
 		
 		BombNode = Gamepanel.BombHead;
 		if(Gamepanel.BombHead != null){
@@ -133,24 +133,24 @@ public class BombeErstellen extends Thread {
 	public void machKaputt(int a, int b, int r){
 		
 		
-		x_Spieler1 = (int) (Gamepanel.Spieler.getX()+15)/40;
-		y_Spieler1 = (int) (Gamepanel.Spieler.getY()+20)/40;
+		x_Spieler1 = (int) (Gamepanel.Player[Gamepanel.Player_Index[0]].getX()+15)/40;
+		y_Spieler1 = (int) (Gamepanel.Player[Gamepanel.Player_Index[0]].getY()+20)/40;
 		if(Gamepanel.Spieler_2){
-			x_Spieler2 = (int) (Gamepanel.Spieler2.getX()+15)/40;
-			y_Spieler2 = (int) (Gamepanel.Spieler2.getY()+15)/40;
+			x_Spieler2 = (int) (Gamepanel.Player[Gamepanel.Player_Index[1]].getX()+15)/40;
+			y_Spieler2 = (int) (Gamepanel.Player[Gamepanel.Player_Index[1]].getY()+15)/40;
 		}
 
 		if(x_Spieler1 == a && y_Spieler1 == b){
-			Gamepanel.Spieler.stirb();
+			Gamepanel.Player[Gamepanel.Player_Index[0]].stirb();
 		}
 		if(x_Spieler2 == a && y_Spieler2 == b){
-			Gamepanel.Spieler2.stirb();
+			Gamepanel.Player[Gamepanel.Player_Index[1]].stirb();
 		}
 		
 		
 		for(int i = 1; i<=r; i++){
-			new SoundCheck("boom.wav");
-			new SoundCheck("Spitfire2.wav");
+		//	new SoundCheck("boom.wav");
+		//	new SoundCheck("Spitfire2.wav");
 			
 			if(Gamepanel.Spielfeld[b][a+i].zerstoerbar){
 				Gamepanel.Spielfeld[b][a+i].setWeg();
@@ -160,10 +160,10 @@ public class BombeErstellen extends Thread {
 			}
 			if(Gamepanel.Spielfeld[b][a+i].unzerstoerbar) break;
 			if(x_Spieler1 == a+i && y_Spieler1 == b){
-				Gamepanel.Spieler.stirb();
+				Gamepanel.Player[Gamepanel.Player_Index[0]].stirb();
 			}
 			if(x_Spieler2 == a+i && y_Spieler2 == b){
-				Gamepanel.Spieler2.stirb();
+				Gamepanel.Player[Gamepanel.Player_Index[1]].stirb();
 			}
 			if(liegtItem(a + i , b)){
 				entferneItem(a + i, b);
@@ -180,10 +180,10 @@ public class BombeErstellen extends Thread {
 			}
 			if(Gamepanel.Spielfeld[b][a-i].unzerstoerbar) break;
 			if(x_Spieler1 == a-i && y_Spieler1 == b){
-				Gamepanel.Spieler.stirb();
+				Gamepanel.Player[Gamepanel.Player_Index[0]].stirb();
 				}
 			if(x_Spieler2 == a-i && y_Spieler2 == b){
-				Gamepanel.Spieler2.stirb();
+				Gamepanel.Player[Gamepanel.Player_Index[1]].stirb();
 				}
 
 			if(liegtItem(a - i , b)){
@@ -200,10 +200,10 @@ public class BombeErstellen extends Thread {
 			}
 			if(Gamepanel.Spielfeld[b+i][a].unzerstoerbar) break;
 			if(x_Spieler1 == a && y_Spieler1 == b+i){
-				Gamepanel.Spieler.stirb();
+				Gamepanel.Player[Gamepanel.Player_Index[0]].stirb();
 				}
 			if(x_Spieler2 == a && y_Spieler2 == b+i){
-				Gamepanel.Spieler2.stirb();
+				Gamepanel.Player[Gamepanel.Player_Index[1]].stirb();
 				}
 
 			if(liegtItem(a , b + i)){
@@ -221,10 +221,10 @@ public class BombeErstellen extends Thread {
 			
 			if(Gamepanel.Spielfeld[b-i][a].unzerstoerbar) break;
 			if(x_Spieler1 == a && y_Spieler1 == b+i){
-				Gamepanel.Spieler.stirb();
+				Gamepanel.Player[Gamepanel.Player_Index[0]].stirb();
 			}
 			if(x_Spieler2 == a && y_Spieler2 == b+i){
-				Gamepanel.Spieler2.stirb();
+				Gamepanel.Player[Gamepanel.Player_Index[1]].stirb();
 			}
 
 			if(liegtItem(a , b - i)){
@@ -240,31 +240,32 @@ public class BombeErstellen extends Thread {
 	}
 	
 	// Vorsicht, oben und unten vertauscht!
+	
+	
+	/**
+	 * Löst die Kettenreaktion aus, falls nötig
+	 */
 	public void Kettenreaktion(int unten, int links, int oben, int rechts, int x, int y){
 		for(int i = 0; i <= unten; i++){
 			if(liegtBombe(x, y - i)){
 				loescheBombe(x, y - i);
-				System.out.println("BLA");
 
 			}
 		}
 		for(int i = 0; i <= oben; i++){
 			if(liegtBombe(x, y + i)){
 				loescheBombe(x, y + i);
-				System.out.println("BLA");
 
 			}
 		}
 		for(int i = 0; i <= links; i++){
 			if(liegtBombe(x - i, y)){
 				loescheBombe(x - i, y);
-				System.out.println("BLA");
 			}
 		}
 		for(int i = 0; i <= rechts; i++){
 			if(liegtBombe(x + i, y)){
 				loescheBombe(x + i, y);
-				System.out.println("BLA");
 
 			}
 		}
@@ -314,7 +315,12 @@ public class BombeErstellen extends Thread {
 			}
 		return null;
 	}
-	
+	/**
+	 * 
+	 * @param a position a des items
+	 * @param b position b des items
+	 * @return wenn an der stelle eins liegt, gib true zurück, sonst false
+	  */
 	public boolean liegtItem(int a, int b){
 		ItemNode = Gamepanel.ItemHead;
 		if(ItemNode == null){
@@ -331,7 +337,11 @@ public class BombeErstellen extends Thread {
 			}
 		return false;
 	}
-	
+	/**
+	 * entfernt items aus dem itemhead des Gamepanels
+	 * @param a die koordinate x
+	 * @param b die koordinate y
+	 */
 	public void entferneItem(int a, int b){
 
 		ItemNode = Gamepanel.ItemHead;

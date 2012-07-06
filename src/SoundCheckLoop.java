@@ -1,15 +1,17 @@
 import java.io.*;
 import java.net.URL;
 import javax.sound.sampled.*;
-/**
- * 
- * Spielt Sounds in einer Schleife ab
- * 
- *
- */
-	   
+
+	   /**
+	    * 
+	    * eine musikdatei wird als endlosscheife gespielt
+	    * ein thread wird dafür verwendet	     
+	  */
 public class SoundCheckLoop extends Thread{
-	
+	/**
+	 * 
+	 * @param args der speicherort der datei und sein name
+	 */
 	            
 				public SoundCheckLoop(String args) {           
 	    

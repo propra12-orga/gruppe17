@@ -24,12 +24,12 @@ public  class Item {
 	 */
 	//
 	public Item(int i, int x, int y){
-		if(i < 15){ Feuer=true; index = 0; }
-		else if(i < 22){ Handschuh=true; index = 1; }
-		else if(i < 29){ Kicker=true; index = 2; }
-		else if(i < 33){ ExtraLeben=true; index = 3; }
-		else if(i < 48){ BombenItem=true; index = 4; }
-		else if(i <= 58){ Rollschuh=true; index = 5; }
+		if(i < 8){ Feuer=true; index = 0; }
+		else if(i < 12){ Handschuh=true; index = 1; }
+		else if(i < 16){ Kicker=true; index = 2; }
+		else if(i < 20){ ExtraLeben=true; index = 3; }
+		else if(i < 28){ BombenItem=true; index = 4; }
+		else if(i <= 35){ Rollschuh=true; index = 5; }
 		this.x=x;
 		this.y=y;
 	}

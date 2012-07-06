@@ -19,6 +19,7 @@ public class TastenCheck extends TimerTask implements Runnable, KeyListener {
 	public static boolean bombelegen;
 	public static boolean itembenutzen;
 	
+	public static boolean zufall;
 	public static boolean speichern;
 	/**
 	 * Booleans für Spieler2
@@ -44,14 +45,14 @@ public class TastenCheck extends TimerTask implements Runnable, KeyListener {
 			if(!hoch){
 				hoch = true;
 				neueRichtung1 = true;
-				zaehler = (zaehler + 3) % 4;
+				zaehler = (zaehler + 4) % 5;
 			}
 		}
 		if(k.getKeyCode() == KeyEvent.VK_DOWN){
 			if(!runter){
 				runter = true;
 				neueRichtung1 = true;
-				zaehler = (zaehler + 1) % 4;
+				zaehler = (zaehler + 1) % 5;
 			}
 		}
 		if(k.getKeyCode() == KeyEvent.VK_RIGHT){
@@ -108,7 +109,6 @@ public class TastenCheck extends TimerTask implements Runnable, KeyListener {
 	public void keyReleased(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_UP){	
 			hoch = false;
-			System.out.println("TASTE");
 		}
 		if(e.getKeyCode() == KeyEvent.VK_DOWN){
 			runter = false;
@@ -153,6 +153,9 @@ public class TastenCheck extends TimerTask implements Runnable, KeyListener {
 		}
 		if(e.getKeyCode() == KeyEvent.VK_E){
 			itembenutzen2=true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_Z){
+			zufall = true;
 		}
 	}
 

@@ -14,7 +14,15 @@
 public class DetonationRadius extends Thread {
 	int rechts, links, oben, unten, x, y;
 
-	
+/**
+ * 	
+ * @param a oben
+ * @param b unten
+ * @param c links
+ * @param d rechts
+ * @param e
+ * @param f
+ */
 	public DetonationRadius(int a, int b, int c, int d, int e, int f){
 //		System.out.println("DetonationRadius erstellt");
 		unten = a;

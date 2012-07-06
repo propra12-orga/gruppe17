@@ -7,11 +7,11 @@
 public class Bomberman {
 	public double x;
 	public double y;
-	double speed=0.000675;
+	double speed=0.0000675;
 	int Leben = 1;
 	int BombenReichweite=2;
 	int BombenAnzahl = 1;
-	boolean Handschuh = false;
+	boolean Handschuh = true;
 	boolean Kicker = false;
 	int toleranz = 1;
 	boolean tot;
@@ -24,26 +24,34 @@ public class Bomberman {
 	 * @param a x-Koordinate im Spielfeld
 	 * @param b y-Koordinate im Spielfeld
 	 */
-	public Bomberman(int a, int b){
+	public Bomberman(double a, double b){
 		this.x=a;
 		this.y=b;		
 	}
-	
+	/**
+	 * bewegt den Spieler nach oben
+	 */
 	public void geheNachOben(){
 		this.y-=speed;
 		if(!FeldBegehbar(1)) this.y+=speed;
 	}
-	
+	/**
+	 * bewegt den Spieler nach unten
+	 */
 	public void geheNachUnten(){
 		this.y+=speed;
 		if(!FeldBegehbar(2)) this.y-=speed;
 	}
-	
+	/**
+	 * bewegt den Spieler nach rechts
+	 */
 	public void geheNachRechts(){
 		this.x+=speed;
 		if(!FeldBegehbar(3)) this.x-=speed;
 	}
-	
+	/**
+	 * bewegt den Spieler nach links
+	 */
 	public void geheNachLinks(){
 		this.x-=speed;
 		if(!FeldBegehbar(4)) this.x+=speed;
@@ -74,11 +82,9 @@ public class Bomberman {
 				if(Gamepanel.Spielfeld[(int) (y+35)/40][(int) (x+30)/40].begehbar && Gamepanel.Spielfeld[(int) (y+35)/40][(int) (x)/40].begehbar) {
 					if(Gamepanel.Spielfeld[(int) (y+30)/40][(int) (x+25)/40].liegtItem){
 						setItem((int) (x+25)/40, (int) (y+30)/40);
-						System.out.println("BLA");
 					}
 					if(Gamepanel.Spielfeld[(int) (y+30)/40][(int) (x+5)/40].liegtItem){
 						setItem((int) (x+5)/40, (int) (y+30)/40);
-						System.out.println("BLAbla");
 					}
 					if(Gamepanel.Spielfeld[(int) (y+35)/40][(int) (x+30)/40].begehbar && Gamepanel.Spielfeld[(int) (y+35)/40][(int) (x)/40].Ausgang){ Gamepanel.Ende = true;}
 				return true;
@@ -111,14 +117,14 @@ public class Bomberman {
 		}
 		return false;
 	}
-	/*
+	/**
 	 *es können bis zu 8 Bomben mit Hilfe des Bombenitemupgrades getragen werden 
 	 * 
 	 */
 	public void setBombenItem() {
 		if(BombenAnzahl < 8) BombenAnzahl+=1;
 	}
-	/*
+	/**
 	 * es wird ein Lebenspunkt abgezogen. Sobald die Leben des Bomberman auf 0 gesetzt wird wird 'tot' als 'true' zurückgegeben
 	 * 
 	 */
@@ -135,8 +141,7 @@ public class Bomberman {
 		
 	}
 	/**
-	 * mit Hilfe des Feueritems wird die Bombenreichweite um 1 erhöht
-	 * 
+	 * Setzt die reichweite des feueritems um 1 hoch
 	 */
 	public void setFeuer() {
 		BombenReichweite+=1;
@@ -164,43 +169,51 @@ public class Bomberman {
 		speed+=0.0000025;
 		
 	}
-	
+	/**
+	 * 
+	 * @return position x
+	 */
 	public double getX(){
 		return x;
 	}
-	
+	/**
+	 * 
+	 * @return position y
+	 */
 	public double getY(){
 		return y;
 	}
-	
+	/**
+	 * setzt das Item
+	 * @param a position x
+	 * @param b position y
+	 */
 	public void setItem(int a, int b){
 		Index = ItemAnStelle(a,b);
 		
-		System.out.println("A: " + a + " B: " + b + " Index: " + Index);
 		
 		switch(Index){
 			case 0 : setFeuer();
-					 System.out.println("Feuer");
 					 break;
 			case 1 : setHandschuh();
-					 System.out.println("Handschuh");
 					 break;
 			case 2 : setKicker();
-					 System.out.println("Kicker");
 					 break;
 			case 3 : setExtraLeben();
-					 System.out.println("ExtraLeben");
 					 break;
 			case 4 : setBombenItem();
-					 System.out.println("BombenItem");
 					 break;
 			case 5 : setRollschuh();
-					 System.out.println("Rollschuh");
 					 break;
 		}
 		entferneItem(a,b);
 	}
-	
+	/**
+	 * Gibt den index des items an stelle a,b zurück
+	 * @param a index a
+	 * @param b index b
+	 * @return der index des da liegenden items, wenn es nciht da ist, -1
+	 */
 	public int ItemAnStelle(int a, int b){
 //		ItemNode = Gamepanel.ItemHead;
 //		if(ItemNode == null){
@@ -225,7 +238,11 @@ public class Bomberman {
 			return -1;
 			
 	}
-	
+	/**
+	 * entfernt das item an positionen a,b
+	 * @param a
+	 * @param b
+	 */
 	public void entferneItem(int a, int b){
 
 		ItemNode = Gamepanel.ItemHead;

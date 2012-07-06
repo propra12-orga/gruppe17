@@ -26,19 +26,31 @@ public class Bombe {
 	public int getX(){
 		return x;
 	}
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getY(){
 		return y;
 	}
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getReichweite(){
 		return Reichweite;
 	}
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public long getZeit(){
 		return Zeit;
 	}
-	
+	/**
+	 * 
+	 * @param a entsprechende zeit
+	 */
 	public void setZeit(long a){
 		Zeit = a;
 	}

@@ -52,7 +52,7 @@ public class Grafik extends JPanel {
 	public BufferedImage[] Hirte_ho_re = new BufferedImage[4];
 	public BufferedImage[] Hirte_ho_li = new BufferedImage[4];
 	public BufferedImage[] Items = new BufferedImage[6];
-	public BufferedImage[] Menu = new BufferedImage[4];
+	public BufferedImage[] Menu = new BufferedImage[5];
 	public BufferedImage[] Winner = new BufferedImage[4];
 	int Schaf_Index; //Gibt an, welches Animations-Bild an der Reihe ist
 	int Hirte_Index;
@@ -88,7 +88,9 @@ public class Grafik extends JPanel {
 	FlugItemListe hilfslist_flugitem;
 
 	
-	
+	/**
+	 * der Arbeitskonstruktor, setzt die Grafik
+	 */
 	
 	public Grafik(){
 
@@ -121,7 +123,9 @@ public class Grafik extends JPanel {
 		repaint();
 		
 	}
-	
+	/**
+	 * Falls init true, setze den startbildschirm
+	 */
 	public void Init(){
 		n = Gamepanel.Spielfeld.length;
 		frame.setSize(FeldSize*(n), FeldSize*(n)+30);
@@ -201,11 +205,14 @@ public class Grafik extends JPanel {
 			g.drawImage(Winner[3],0,0,this);
 		}
 	}
-	
+	/**
+	 * Zeichnet den Spieler 1, das g ist ein Dummywert, muss vom Typ g sein
+	 * @param g
+	 */
 	public void paintSpieler1(Graphics g){
 		Spieler1_x = (int)Spieler1.getX();
 		Spieler1_y = (int)Spieler1.getY();
-		Schaf_Index = (int) ((system_millis - neueRichtung) / 200) % 4;
+		Schaf_Index = (int) (((((system_millis - neueRichtung) / 200) % 4) & 3));
 		
 		if(TastenCheck.runter){
 			if(TastenCheck.rechts){
@@ -229,11 +236,14 @@ public class Grafik extends JPanel {
 				g.drawImage(Schaf_re[Schaf_Index], Spieler1_x, Spieler1_y, this);	
 			} else g.drawImage(Schaf_run[0], Spieler1_x, Spieler1_y, this);	
 	}
-	
+	/**
+	 * Zeichnet den Spieler 2, das g ist ein Dummywert, muss vom Typ g sein
+	 * @param g
+	 */
 	public void paintSpieler2(Graphics g){
 		Spieler2_x = (int)Spieler2.getX();
 		Spieler2_y = (int)Spieler2.getY();
-		Hirte_Index = (int) ((system_millis - neueRichtung2) / 200) % 4;
+		Hirte_Index = (int) (((((system_millis - neueRichtung2) / 200) % 4) & 3));
 		
 		if(TastenCheck.runter2){
 			if(TastenCheck.links2) g.drawImage(Hirte_run_li[Hirte_Index], Spieler2_x, Spieler2_y, this);	
@@ -249,7 +259,10 @@ public class Grafik extends JPanel {
 			 g.drawImage(Hirte_li[Hirte_Index], Spieler2_x, Spieler2_y, this);	
 		} else g.drawImage(Hirte_run[0], Spieler2_x, Spieler2_y, this);
 	}
-	
+	/**
+	 * Zeichnet die Bomben, , das g ist ein Dummywert, muss vom Typ g sein
+	 * @param g
+	 */
 	public void paintBomben(Graphics g){
 		hilfslist = Gamepanel.BombHead;
 
@@ -261,7 +274,10 @@ public class Grafik extends JPanel {
 			hilfslist = hilfslist.next;
 		}
 	}
-	
+	/**
+	 * Zeichnet das Spielfeld(die Felder), das g ist ein Dummywert, muss vom Typ g sein
+	 * @param g
+	 */
 	public void paintSpielfeld(Graphics g){
 		for(int i=0;i<n;i++){
 			for(int j=0;j<n;j++){
@@ -285,7 +301,7 @@ public class Grafik extends JPanel {
 		}
 	}
 	/**
-	 * Zeichnet die Detonation
+	 * Zeichnet die Detonation , das g ist ein Dummywert, muss vom Typ g sein
 	 * @param g
 	 */
 	public void paintDetonation(Graphics g){
@@ -320,7 +336,10 @@ public class Grafik extends JPanel {
 			}
 		}
 	}
-	
+	/**
+	 * Zeichnet die Items, das g ist ein Dummywert, muss vom Typ g sein
+	 * @param g
+	 */
 	public void paintItems(Graphics g){
 		hilfslist_item = Gamepanel.ItemHead;
 
@@ -332,7 +351,10 @@ public class Grafik extends JPanel {
 		}
 		
 	}
-	
+	/**
+	 * Zeichnet die Flugitems, das g ist ein Dummywert, muss vom Typ g sein
+	 * @param g
+	 */
 	public void paintFlugItems(Graphics g){
 		  
 		  hilfslist_flugitem=Gamepanel.FlugItemHead;
@@ -345,7 +367,15 @@ public class Grafik extends JPanel {
 		  }
 		  
 		 }
-	
+	/**
+	 * Zeichnet die Detonation, wobei a-d die ricntungen sind und e-f die aktuelle Position
+	 * @param a unten
+	 * @param b links
+	 * @param c oben
+	 * @param d rechts
+	 * @param e position x
+	 * @param f position y
+	 */
 	public void Detonation(int a, int b, int c, int d, int e, int f){
 		
 		det_time[detonation] = System.currentTimeMillis();
@@ -361,21 +391,41 @@ public class Grafik extends JPanel {
 //		System.out.println("Detonation: " + detonation);
 		repaint();
 	}
-	
+	/**
+	 * falls keine detonation auftritt, mach nichts
+	 * @param n
+	 */
 	public void keineDetonation(int n){
 		
 //		System.out.println("Detonation: " + detonation);
 		repaint();
 	}
 	
+//	public void setNeueRichtung(){
+//		neueRichtung = System.currentTimeMillis();
+//	}
+	/**
+	 * Setze die neue richtung von Spieler 1
+	 */
 	public void setNeueRichtung(){
-		neueRichtung = System.currentTimeMillis();
+		if(Gamepanel.Player_Index[0] == 0) neueRichtung = System.currentTimeMillis();
+		else neueRichtung2 = System.currentTimeMillis();
 	}
-	
+	/**
+	 * Setze die neue richtung von Spieler 2
+	 * 
+	 */
 	public void setNeueRichtung2(){
-		neueRichtung2 = System.currentTimeMillis();
+		if(Gamepanel.Player_Index[0] == 0) neueRichtung2 = System.currentTimeMillis();
+		else neueRichtung = System.currentTimeMillis();
 	}
 	
+//	public void setNeueRichtung2(){
+//		neueRichtung2 = System.currentTimeMillis();
+//	}
+	/**
+	 * Berechnet die Framerate
+	 */
 	private void berechneFPS() {
 
 		delta = System.nanoTime() - last;
@@ -383,9 +433,10 @@ public class Grafik extends JPanel {
 		fps = ((long) 1e9)/delta;
 		
 	}
-	
+	/**
+	 * setzt den eigentlichen frame
+	 */
 	public void setFrame(){
-		System.out.println("BLABLABLA");
 		frame.setSize(1024,768);
 		frame.setPreferredSize(frame.getSize());
 		frame.setLocationRelativeTo(null);
@@ -420,6 +471,7 @@ public void ladeBilder(){
 	Menu[1] = ladeBild("Menu2.jpg");
 	Menu[2] = ladeBild("Menu3.jpg");
 	Menu[3] = ladeBild("Menu4.jpg");
+	Menu[4] = ladeBild("Menu5.jpg");
 	Weg = ladeBild("spielfeld.png");
 	Stein = ladeBild("Brick2.png");
 	uStein = ladeBild("Block.png");

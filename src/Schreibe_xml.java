@@ -3,14 +3,22 @@
 	import java.io.File;
 	import java.io.FileWriter;
 	import java.io.IOException;
-
+/**
+ * 
+ * Diese Klasse schreibt einen Bestehendes Spiel in XML auf, Tags könne in QUickload eingelasen werden
+ *
+ */
 	public class Schreibe_xml {
 
 		int laenge;
 		String file;
 		String ausgabe="";
 
-		
+		/**
+		 * Der Arbeitskonstruktor
+		 * @param laenge Die länge des SPielfeldes
+		 * @param level welches level soll es sein, wird automatisch zu levelx.txt verbunden(x ist der paramenet level)
+		 */
 		
 		public Schreibe_xml(int laenge, int level){
 			ausgabe+="<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
@@ -93,7 +101,10 @@
 	}
 		
 		
-		
+		/**
+		 * die Main
+		 * @param args
+		 */
 		
 	public static void main(String[] args){
 

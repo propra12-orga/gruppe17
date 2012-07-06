@@ -1,14 +1,17 @@
 import java.io.*;
 import java.net.URL;
 import javax.sound.sampled.*;
-
 /**
- * Spiel einen Sound ab	   
  * 
+ * eine Klasse, die ein Musikfinel einal ausführt(als thread)
  *
  */
+	   
 public class SoundCheck extends Thread{
-	
+	/**
+	 * 
+	 * @param args der name/ort der datei
+	 */
 	            
 				public SoundCheck(String args) {           
 	    

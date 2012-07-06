@@ -13,7 +13,11 @@ public class Feld {
 	boolean Ausgang = false;
 	boolean liegtItem = false;
 	
-	
+	/**
+	 * 
+	 * @param i je nach input wird das entsprechende feld mit seinen attibuten gesetzt
+	 * 1 für zerstörbar, 2 unzerstörbar, 3 begehbar und 4 ausgang
+	 */
 	public Feld(int i){
 		if(i == 1) {
 			zerstoerbar = true;
